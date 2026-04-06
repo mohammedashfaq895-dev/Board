@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Payroll</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding: 50px; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
+        h2 { text-align: center; color: #333; margin-top: 0; }
+        label { display: block; margin-top: 15px; color: #555; }
+        input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; margin-top: 20px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #218838; }
+        .result { margin-top: 20px; padding: 15px; background-color: #e9ecef; border-radius: 4px; display: none; }
+        .item-row { display: flex; justify-content: space-between; margin-bottom: 5px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+        .total-row { font-weight: bold; font-size: 18px; color: #28a745; border-top: 2px solid #333; padding-top: 10px; margin-top: 10px;}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Employee Payroll System</h2>
+    <label for="basicSalary">Enter Basic Salary (₹):</label>
+    <input type="number" id="basicSalary" min="0" required>
+
+    <button onclick="calculatePayroll()">Generate Salary Slip</button>
+
+    <div id="resultBox" class="result">
+        <div class="item-row"><span>Basic Salary:</span> <span id="resBasic"></span></div>
+        <div class="item-row"><span>HRA (20%):</span> <span id="resHRA"></span></div>
+        <div class="item-row"><span>DA (10%):</span> <span id="resDA"></span></div>
+        <div class="item-row"><span>Gross Salary:</span> <span id="resGross"></span></div>
+        <div class="item-row" style="color:red;"><span>PF Deduction (12%):</span> <span id="resPF"></span></div>
+        <div class="item-row" style="color:red;"><span>Tax Deduction (5%):</span> <span id="resTax"></span></div>
+        <div class="item-row total-row"><span>Net Salary:</span> <span id="resNet"></span></div>
+    </div>
+</div>
+
+<script>
+    function calculatePayroll() {
+        const basic = parseFloat(document.getElementById('basicSalary').value);
+        if (isNaN(basic) || basic < 0) {
+            alert("Please enter a valid basic salary.");
+            return;
+        }
+
+        const hra = basic * 0.20;
+        const da = basic * 0.10;
+        const gross = basic + hra + da;
+        
+        const pf = basic * 0.12;
+        const tax = gross * 0.05;
+        const totalDeductions = pf + tax;
+        
+        const netSalary = gross - totalDeductions;
+
+        document.getElementById('resBasic').innerText = "₹" + basic.toFixed(2);
+        document.getElementById('resHRA').innerText = "₹" + hra.toFixed(2);
+        document.getElementById('resDA').innerText = "₹" + da.toFixed(2);
+        document.getElementById('resGross').innerText = "₹" + gross.toFixed(2);
+        document.getElementById('resPF').innerText = "-₹" + pf.toFixed(2);
+        document.getElementById('resTax').innerText = "-₹" + tax.toFixed(2);
+        document.getElementById('resNet').innerText = "₹" + netSalary.toFixed(2);
+        
+        document.getElementById('resultBox').style.display = "block";
+    }
+</script>
+
+</body>
+</html>
