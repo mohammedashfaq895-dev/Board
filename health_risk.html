@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Risk Assessment Tool</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding: 50px; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
+        h2 { text-align: center; color: #333; margin-top: 0; }
+        label { display: block; margin-top: 15px; color: #555; }
+        input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #17a2b8; color: white; border: none; border-radius: 4px; margin-top: 20px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #138496; }
+        .result { margin-top: 20px; padding: 15px; border-radius: 4px; text-align: center; display: none; }
+        .low-risk { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .mod-risk { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .high-risk { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Health Risk Assessment</h2>
+    
+    <label for="age">Age:</label>
+    <input type="number" id="age" min="1" required>
+
+    <label for="weight">Weight (kg):</label>
+    <input type="number" id="weight" min="1" required>
+
+    <label for="height">Height (cm):</label>
+    <input type="number" id="height" min="1" required>
+
+    <label for="lifestyle">Lifestyle:</label>
+    <select id="lifestyle">
+        <option value="active">Active (Exercise regularly)</option>
+        <option value="moderate">Moderate (Occasional exercise)</option>
+        <option value="sedentary">Sedentary (Little to no exercise)</option>
+    </select>
+
+    <button onclick="assessRisk()">Assess Health Risk</button>
+
+    <div id="resultBox" class="result">
+        <h3 style="margin-top:0;">Assessment Results</h3>
+        <p><strong>Your BMI:</strong> <span id="bmiValue"></span> (<span id="bmiCategory"></span>)</p>
+        <p style="font-size: 1.2em; font-weight:bold;">Overall Risk Category: <br><span id="riskLevel"></span></p>
+    </div>
+</div>
+
+<script>
+    function assessRisk() {
+        const age = parseInt(document.getElementById('age').value);
+        const weight = parseFloat(document.getElementById('weight').value);
+        const heightCm = parseFloat(document.getElementById('height').value);
+        const lifestyle = document.getElementById('lifestyle').value;
+        const resultBox = document.getElementById('resultBox');
+
+        if (isNaN(age) || isNaN(weight) || isNaN(heightCm)) {
+            alert("Please fill in all numerical fields.");
+            return;
+        }
+
+        // Calculate BMI
+        const heightM = heightCm / 100;
+        const bmi = weight / (heightM * heightM);
+        let bmiCat = "";
+        let riskScore = 0;
+
+        document.getElementById('bmiValue').innerText = bmi.toFixed(1);
+
+        if (bmi < 18.5) { bmiCat = "Underweight"; riskScore += 1; }
+        else if (bmi < 24.9) { bmiCat = "Normal weight"; riskScore += 0; }
+        else if (bmi < 29.9) { bmiCat = "Overweight"; riskScore += 1; }
+        else { bmiCat = "Obese"; riskScore += 2; }
+        
+        document.getElementById('bmiCategory').innerText = bmiCat;
+
+        // Factor in Age
+        if (age > 50) riskScore += 1;
+        if (age > 65) riskScore += 1;
+
+        // Factor in Lifestyle
+        if (lifestyle === "sedentary") riskScore += 2;
+        if (lifestyle === "moderate") riskScore += 1;
+
+        // Determine Final Risk
+        let finalRisk = "";
+        if (riskScore <= 1) {
+            finalRisk = "Low Risk";
+            resultBox.className = "result low-risk";
+        } else if (riskScore <= 3) {
+            finalRisk = "Moderate Risk";
+            resultBox.className = "result mod-risk";
+        } else {
+            finalRisk = "High Risk";
+            resultBox.className = "result high-risk";
+        }
+
+        document.getElementById('riskLevel').innerText = finalRisk;
+        resultBox.style.display = "block";
+    }
+</script>
+
+</body>
+</html>
