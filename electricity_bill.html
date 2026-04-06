@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electricity Bill Calculator</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding: 50px; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { text-align: center; color: #333; margin-top: 0; }
+        label { display: block; margin-top: 15px; color: #555; }
+        input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #e67e22; color: white; border: none; border-radius: 4px; margin-top: 20px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #d35400; }
+        .result { margin-top: 20px; padding: 15px; background-color: #e9ecef; border-radius: 4px; border: 1px solid #ced4da; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Electricity Bill Calculator</h2>
+    <label for="units">Units Consumed (kWh):</label>
+    <input type="number" id="units" min="0" required>
+
+    <button onclick="calculateBill()">Calculate Bill</button>
+
+    <div id="resultBox" class="result">
+        <p><strong>Base Charge:</strong> ₹<span id="baseCharge"></span></p>
+        <p><strong>Tax (5%):</strong> ₹<span id="taxAmount"></span></p>
+        <hr>
+        <p><strong>Final Bill:</strong> ₹<span id="finalBill" style="font-weight:bold; color: #d35400;"></span></p>
+    </div>
+</div>
+
+<script>
+    function calculateBill() {
+        const units = parseFloat(document.getElementById('units').value);
+        if (isNaN(units) || units < 0) {
+            alert("Please enter a valid number of units.");
+            return;
+        }
+
+        let baseCharge = 0;
+        
+        // Slab-wise calculation logic
+        if (units <= 100) {
+            baseCharge = units * 2; // ₹2 per unit for first 100
+        } else if (units <= 200) {
+            baseCharge = (100 * 2) + ((units - 100) * 4); // ₹4 per unit for next 100
+        } else {
+            baseCharge = (100 * 2) + (100 * 4) + ((units - 200) * 6); // ₹6 per unit above 200
+        }
+
+        const tax = baseCharge * 0.05;
+        const finalBill = baseCharge + tax;
+
+        document.getElementById('baseCharge').innerText = baseCharge.toFixed(2);
+        document.getElementById('taxAmount').innerText = tax.toFixed(2);
+        document.getElementById('finalBill').innerText = finalBill.toFixed(2);
+        
+        document.getElementById('resultBox').style.display = "block";
+    }
+</script>
+
+</body>
+</html>
